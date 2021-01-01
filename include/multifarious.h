@@ -1,0 +1,8 @@
+#ifndef MULTIFARIOUS_MULTIFARIOUS_H
+#define MULTIFARIOUS_MULTIFARIOUS_H
+
+namespace multifarious {
+
+}
+
+#endif // MULTIFARIOUS_MULTIFARIOUS_H
