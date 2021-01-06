@@ -3,9 +3,9 @@
 #include <iostream>
 #include <numeric>
 
-int main() {
-    namespace mf = multifarious;
+namespace mf = multifarious;
 
+int main() {
     {// member_pointer_t
         using namespace mf::type_traits;
 
@@ -13,7 +13,7 @@ int main() {
         static_assert(std::is_same_v<
                       member_pointer_t<std::string, void()>,
                       void (std::string::*)()>);
-    }// namespace ;
+    }
 
     {// array_t
         using namespace mf::type_traits;
