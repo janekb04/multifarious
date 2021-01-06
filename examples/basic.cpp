@@ -20,8 +20,8 @@ int main() {
         using namespace mf::type_traits;
 
         // Array of 5 pointers to functions taking a char* and returning a pointer to an unbounded array of char*
-        char* (* (* foo_1[5])(char*))[];
-        array_t<std::add_pointer_t<std::add_pointer_t<array_t<char*>>(char*)>, 5> foo_2;
+        [[maybe_unused]] char* (* (* foo_1[5])(char*))[];
+        [[maybe_unused]] array_t<std::add_pointer_t<std::add_pointer_t<array_t<char*>>(char*)>, 5> foo_2;
         static_assert(std::is_same_v<decltype(foo_1), decltype(foo_2)>);
     }
 

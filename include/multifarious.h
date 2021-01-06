@@ -53,17 +53,17 @@ namespace multifarious {
     }
     // Things related to functional programming
     namespace functional {
-        // Returns such a function `func` that `func(args) == f1(f2(args))`
+        // Returns such a function `func` that `func(args) == f(g(args))`
         // An implementation of the mathematical Composition Operator
         template<typename Fn1, typename Fn2>
-        constexpr MULTIFARIOUS_LAMBDA_T compose(Fn1&& f1, Fn2&& f2) noexcept {
-            return [f1{MULTIFARIOUS_FWD_CAPTURE(f1)},
-                    f2{MULTIFARIOUS_FWD_CAPTURE(f2)}]
+        constexpr MULTIFARIOUS_LAMBDA_T compose(Fn1&& f, Fn2&& g) noexcept {
+            return [f{MULTIFARIOUS_FWD_CAPTURE(f)},
+                    g{MULTIFARIOUS_FWD_CAPTURE(g)}]
                     (auto&& ... args) constexpr
                     noexcept(std::is_nothrow_invocable_v<Fn2, decltype(args)...> &&
                              std::is_nothrow_invocable_v<Fn1, std::invoke_result_t<Fn2, decltype(args)...>>)
                     -> std::invoke_result_t<Fn1, std::invoke_result_t<Fn2, decltype(args)...>> {
-                return std::get<0>(f1)(MULTIFARIOUS_FWD(std::get<0>(f2)(MULTIFARIOUS_FWD(args)...)));
+                return std::get<0>(f)(MULTIFARIOUS_FWD(std::get<0>(g)(MULTIFARIOUS_FWD(args)...)));
             };
         }
 
