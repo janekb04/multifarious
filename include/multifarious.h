@@ -1,16 +1,17 @@
 #ifndef MULTIFARIOUS_MULTIFARIOUS_H
 #define MULTIFARIOUS_MULTIFARIOUS_H
 
-#include <type_traits>
-#include <new>
 #include <memory>
+#include <new>
 #include <tuple>
+#include <type_traits>
 
 // Shorthand macro for perfect forwarding
 #define MULTIFARIOUS_FWD(...) std::forward<decltype(__VA_ARGS__)>(__VA_ARGS__)
 // Shorthand macro for capturing a perfect forwarded object in a lambda
 // The object must be retrieved using `std::get<0>`
-#define MULTIFARIOUS_FWD_CAPTURE(...) std::tuple{std::forward<decltype(__VA_ARGS__)>(__VA_ARGS__)}
+#define MULTIFARIOUS_FWD_CAPTURE(...) \
+    std::tuple { std::forward<decltype(__VA_ARGS__)>(__VA_ARGS__) }
 // Just a fancy `auto` that carries meaning that it is specifically a lambda type
 #define MULTIFARIOUS_LAMBDA_T auto
 
@@ -58,11 +59,9 @@ namespace multifarious {
         template<typename Fn1, typename Fn2>
         constexpr MULTIFARIOUS_LAMBDA_T compose(Fn1&& f, Fn2&& g) noexcept {
             return [f{MULTIFARIOUS_FWD_CAPTURE(f)},
-                    g{MULTIFARIOUS_FWD_CAPTURE(g)}]
-                    (auto&& ... args) constexpr
-                    noexcept(std::is_nothrow_invocable_v<Fn2, decltype(args)...> &&
-                             std::is_nothrow_invocable_v<Fn1, std::invoke_result_t<Fn2, decltype(args)...>>)
-                    -> std::invoke_result_t<Fn1, std::invoke_result_t<Fn2, decltype(args)...>> {
+                    g{MULTIFARIOUS_FWD_CAPTURE(g)}](auto&&... args) constexpr noexcept(std::is_nothrow_invocable_v<Fn2, decltype(args)...> &&
+                                                                                       std::is_nothrow_invocable_v<Fn1, std::invoke_result_t<Fn2, decltype(args)...>>)
+                    ->std::invoke_result_t<Fn1, std::invoke_result_t<Fn2, decltype(args)...>> {
                 return std::get<0>(f)(MULTIFARIOUS_FWD(std::get<0>(g)(MULTIFARIOUS_FWD(args)...)));
             };
         }
@@ -72,10 +71,8 @@ namespace multifarious {
         // An implementation of the Y-Combinator from untyped lambda calculus
         template<typename Fn>
         constexpr MULTIFARIOUS_LAMBDA_T y_combinator(Fn&& f) noexcept {
-            return [f = MULTIFARIOUS_FWD_CAPTURE(f)]
-                    (auto&& ... args) constexpr
-                    noexcept(std::is_nothrow_invocable_v<Fn, Fn, decltype(args)...>)
-                    -> std::invoke_result_t<Fn, Fn, decltype(args)...> {
+            return [f = MULTIFARIOUS_FWD_CAPTURE(f)](auto&&... args) constexpr noexcept(std::is_nothrow_invocable_v<Fn, Fn, decltype(args)...>)
+                    ->std::invoke_result_t<Fn, Fn, decltype(args)...> {
                 return std::get<0>(f)(std::get<0>(f), MULTIFARIOUS_FWD(args)...);
             };
         }
@@ -89,4 +86,4 @@ namespace multifarious {
 #undef MULTIFARIOUS_LAMBDA_T
 #endif
 
-#endif // MULTIFARIOUS_MULTIFARIOUS_H
+#endif// MULTIFARIOUS_MULTIFARIOUS_H
