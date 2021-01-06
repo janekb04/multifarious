@@ -1,2 +1,5 @@
-add_executable(basic basic.cpp)
-target_link_libraries(basic multifarious)
+add_executable(multifarious_basic basic.cpp)
+target_link_libraries(multifarious_basic multifarious)
+
+add_custom_target(multifarious_all_examples)
+add_dependencies(multifarious_all_examples multifarious_basic)
