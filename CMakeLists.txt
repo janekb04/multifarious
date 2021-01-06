@@ -6,3 +6,5 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_library(multifarious INTERFACE)
 target_include_directories(multifarious INTERFACE include)
+
+add_subdirectory(examples)
