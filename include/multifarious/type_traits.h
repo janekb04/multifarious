@@ -1,6 +1,8 @@
 #ifndef MULTIFARIOUS_TYPE_TRAITS_H
 #define MULTIFARIOUS_TYPE_TRAITS_H
 
+#include <cstdlib>
+
 // Type utilities somewhat similar to standard type_traits
 namespace multifarious::type_traits {
     // Type of a pointer to a member of type `Member` of class `Class`

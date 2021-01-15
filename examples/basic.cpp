@@ -1,7 +1,11 @@
+#define MULTIFARIOUS_ANONYMOUS_TYPE_DEFINE_ABBREVIATIONS
 #include "multifarious.h"
+#include <array>
 #include <cassert>
+#include <climits>
+#include <functional>
 #include <iostream>
-#include <numeric>
+#include <vector>
 
 namespace mf = multifarious;
 
@@ -37,9 +41,10 @@ int main() {
         constexpr auto composed = compose([](int x) { return x * x; }, [](int x) { return x + 3; });
         constexpr auto manual = [](int x) { return x * x + 6 * x + 9; };
 
-        for (int i = 0; i < 100; ++i) {
-            assert(composed(i) == manual(i));// TODO: change to static_assert
-        }
+        MULTIFARIOUS_FORCE_CONSTANT_EVALUATION(
+            for (int i = 0; i < 100; ++i) {
+                assert(composed(i) == manual(i));
+            });
     }
 
     {// y_combinator
@@ -56,4 +61,25 @@ int main() {
 
         static_assert(fib(15) == 987);
     }
+
+    // clang-format off
+    {// anonymous_type
+        struct derived : public struct_(int x, y;) {
+            constexpr int sum() {
+                return x + y;
+            }
+        };
+
+        constexpr int s = derived{2, 3}.sum();
+
+        //Not yet implemented in any known compiler
+        //
+        //vector<enum_{RED, GREEN, BLUE}> colors;
+        //constexpr auto lambda = [](struct_(std::string name; int age;) person) -> struct_(std::string fortune; int luckyNumber; char happyLetter;) {
+        //  int luck = person.age * person.name.size() - (person.age ^ person.age * 13);
+        //  return { "May the luck be with you.", luck, person.name[luck % person.name.size()] };
+        //};
+        //
+        //constexpr int theMagicConstant = lambda("John Doe", 42).luckyNumber;
+    }// clang-format on
 }
